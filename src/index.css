@@ -193,6 +193,13 @@ body {
   @apply px-2 py-2 rounded-xl bg-[#bebfc7] text-white text-xs font-bold;
 }
 
+.vt-front-back-btn:disabled,
+.vt-mini-btn:disabled {
+  opacity: 0.52;
+  cursor: not-allowed;
+  filter: saturate(0.7);
+}
+
 .vt-front-back-active {
   @apply bg-[#4f4fc7];
 }

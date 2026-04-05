@@ -15,6 +15,12 @@ import {
   downloadShirtAsGLB,
 } from "../config/glbExport";
 import { DecalTypes, DesignSides } from "../config/constants";
+import {
+  initStateHistory,
+  redoStateHistory,
+  subscribeStateHistory,
+  undoStateHistory,
+} from "../config/history";
 import { FilePicker } from "../components";
 
 const GARMENT_COLORS = [
@@ -184,6 +190,10 @@ const Customizer = () => {
   const [isRecordingMotion, setIsRecordingMotion] = useState(false);
   const [isCursorRecording, setIsCursorRecording] = useState(false);
   const [isExportingGLB, setIsExportingGLB] = useState(false);
+  const [historyMeta, setHistoryMeta] = useState({
+    canUndo: false,
+    canRedo: false,
+  });
 
   const designUploadRef = useRef(null);
   const frontDesignUploadRef = useRef(null);
@@ -195,6 +205,21 @@ const Customizer = () => {
   const previousAutoRotateRef = useRef(false);
   const uploadedModelUrlRef = useRef("");
   const didAutoCleanDefaultsRef = useRef(false);
+
+  useEffect(() => {
+    const cleanupHistory = initStateHistory();
+    const unsubscribeHistory = subscribeStateHistory((meta) => {
+      setHistoryMeta({
+        canUndo: meta.canUndo,
+        canRedo: meta.canRedo,
+      });
+    });
+
+    return () => {
+      unsubscribeHistory();
+      cleanupHistory();
+    };
+  }, []);
 
   useEffect(
     () => () => {
@@ -320,6 +345,33 @@ const Customizer = () => {
   };
 
   const getDesignStateKeyBySide = (side) => DecalTypes[side]?.stateProperty || "frontDecal";
+
+  const removeDesignBySide = (side) => {
+    const sideKey = getDesignStateKeyBySide(side);
+    state[sideKey] = "";
+  };
+
+  const removeCurrentDesign = () => {
+    removeDesignBySide(snap.designTarget || "front");
+  };
+
+  const removeAllDesigns = () => {
+    state.frontDecal = "";
+    state.backDecal = "";
+    state.leftShoulderDecal = "";
+    state.rightShoulderDecal = "";
+    state.fullDecal = "";
+    state.isFullTexture = false;
+    state.isLogoTexture = true;
+  };
+
+  const handleUndo = () => {
+    undoStateHistory();
+  };
+
+  const handleRedo = () => {
+    redoStateHistory();
+  };
 
   const maybeCleanDarkBackground = async (type, source) => {
     if (!source) {
@@ -701,6 +753,32 @@ const Customizer = () => {
             Upload Back
           </button>
         </div>
+        <div className="vt-front-back-row">
+          <button
+            type="button"
+            className="vt-front-back-btn"
+            onClick={handleUndo}
+            disabled={!historyMeta.canUndo}
+          >
+            Undo
+          </button>
+          <button
+            type="button"
+            className="vt-front-back-btn"
+            onClick={handleRedo}
+            disabled={!historyMeta.canRedo}
+          >
+            Redo
+          </button>
+        </div>
+        <div className="vt-front-back-row">
+          <button type="button" className="vt-front-back-btn" onClick={removeCurrentDesign}>
+            Remove Current
+          </button>
+          <button type="button" className="vt-front-back-btn" onClick={removeAllDesigns}>
+            Remove All
+          </button>
+        </div>
 
         <button
           type="button"
@@ -925,10 +1003,7 @@ const Customizer = () => {
               <button
                 type="button"
                 className="vt-mini-btn"
-                onClick={() => {
-                  const stateKey = getDesignStateKeyBySide(snap.designTarget);
-                  state[stateKey] = "";
-                }}
+                onClick={removeCurrentDesign}
               >
                 Clear Current Side Design
               </button>
