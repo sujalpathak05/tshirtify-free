@@ -305,6 +305,110 @@ const loadImage = (src) =>
     image.src = src;
   });
 
+const resizeCanvasHighQuality = (sourceCanvas, targetWidth, targetHeight) => {
+  let currentCanvas = sourceCanvas;
+  let currentWidth = sourceCanvas.width;
+  let currentHeight = sourceCanvas.height;
+
+  if (!currentWidth || !currentHeight || !targetWidth || !targetHeight) {
+    return sourceCanvas;
+  }
+
+  // Progressive resize gives cleaner results than one-shot large scaling.
+  const isUpscaling = targetWidth > currentWidth || targetHeight > currentHeight;
+
+  while (
+    (isUpscaling && (targetWidth > currentWidth * 1.8 || targetHeight > currentHeight * 1.8)) ||
+    (!isUpscaling && (targetWidth < currentWidth * 0.55 || targetHeight < currentHeight * 0.55))
+  ) {
+    const nextWidth = isUpscaling
+      ? Math.min(targetWidth, Math.round(currentWidth * 1.6))
+      : Math.max(targetWidth, Math.round(currentWidth * 0.6));
+    const nextHeight = isUpscaling
+      ? Math.min(targetHeight, Math.round(currentHeight * 1.6))
+      : Math.max(targetHeight, Math.round(currentHeight * 0.6));
+
+    const stepCanvas = document.createElement("canvas");
+    stepCanvas.width = Math.max(1, nextWidth);
+    stepCanvas.height = Math.max(1, nextHeight);
+
+    const stepContext = stepCanvas.getContext("2d");
+    if (!stepContext) {
+      break;
+    }
+
+    stepContext.imageSmoothingEnabled = true;
+    stepContext.imageSmoothingQuality = "high";
+    stepContext.clearRect(0, 0, stepCanvas.width, stepCanvas.height);
+    stepContext.drawImage(currentCanvas, 0, 0, currentWidth, currentHeight, 0, 0, stepCanvas.width, stepCanvas.height);
+
+    currentCanvas = stepCanvas;
+    currentWidth = stepCanvas.width;
+    currentHeight = stepCanvas.height;
+  }
+
+  if (currentWidth === targetWidth && currentHeight === targetHeight) {
+    return currentCanvas;
+  }
+
+  const outputCanvas = document.createElement("canvas");
+  outputCanvas.width = Math.max(1, targetWidth);
+  outputCanvas.height = Math.max(1, targetHeight);
+
+  const outputContext = outputCanvas.getContext("2d");
+  if (!outputContext) {
+    return currentCanvas;
+  }
+
+  outputContext.imageSmoothingEnabled = true;
+  outputContext.imageSmoothingQuality = "high";
+  outputContext.clearRect(0, 0, outputCanvas.width, outputCanvas.height);
+  outputContext.drawImage(currentCanvas, 0, 0, currentWidth, currentHeight, 0, 0, outputCanvas.width, outputCanvas.height);
+
+  return outputCanvas;
+};
+
+export const upscaleImageTo4K = async (imageSrc, longestSide = 4096) => {
+  if (!imageSrc) {
+    return imageSrc;
+  }
+
+  const image = await loadImage(imageSrc);
+  const width = image.naturalWidth || image.width;
+  const height = image.naturalHeight || image.height;
+
+  if (!width || !height) {
+    return imageSrc;
+  }
+
+  const maxSide = Math.max(width, height);
+  const targetLongest = Math.max(512, Math.min(4096, Math.round(longestSide)));
+
+  if (maxSide === targetLongest) {
+    return imageSrc;
+  }
+
+  const scale = targetLongest / maxSide;
+  const targetWidth = Math.max(1, Math.round(width * scale));
+  const targetHeight = Math.max(1, Math.round(height * scale));
+
+  const sourceCanvas = document.createElement("canvas");
+  sourceCanvas.width = width;
+  sourceCanvas.height = height;
+  const sourceContext = sourceCanvas.getContext("2d");
+
+  if (!sourceContext) {
+    return imageSrc;
+  }
+
+  sourceContext.imageSmoothingEnabled = true;
+  sourceContext.imageSmoothingQuality = "high";
+  sourceContext.drawImage(image, 0, 0, width, height);
+
+  const outputCanvas = resizeCanvasHighQuality(sourceCanvas, targetWidth, targetHeight);
+  return outputCanvas.toDataURL("image/png");
+};
+
 export const removeDarkBackgroundFromImage = async (
   imageSrc,
   threshold = 42,

@@ -9,6 +9,7 @@ import {
   reader,
   startCanvasRecording,
   stopCanvasRecording,
+  upscaleImageTo4K,
 } from "../config/helpers";
 import {
   downloadShirtAsGLB,
@@ -321,14 +322,26 @@ const Customizer = () => {
   const getDesignStateKeyBySide = (side) => DecalTypes[side]?.stateProperty || "frontDecal";
 
   const maybeCleanDarkBackground = async (type, source) => {
-    if (!source || type === "full" || !state.autoCleanDarkBg) {
+    if (!source) {
       return source;
     }
 
+    let processed = source;
+
     try {
-      return await removeDarkBackgroundFromImage(source);
+      processed = await upscaleImageTo4K(source, 4096);
     } catch (error) {
-      return source;
+      processed = source;
+    }
+
+    if (type === "full" || !state.autoCleanDarkBg) {
+      return processed;
+    }
+
+    try {
+      return await removeDarkBackgroundFromImage(processed);
+    } catch (error) {
+      return processed;
     }
   };
 

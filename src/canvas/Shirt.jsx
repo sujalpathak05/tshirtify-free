@@ -127,7 +127,7 @@ const Shirt = () => {
         }
 
         texture.colorSpace = THREE.SRGBColorSpace;
-        texture.anisotropy = 8;
+        texture.anisotropy = 16;
         texture.wrapS = THREE.ClampToEdgeWrapping;
         texture.wrapT = THREE.ClampToEdgeWrapping;
         texture.minFilter = THREE.LinearFilter;
