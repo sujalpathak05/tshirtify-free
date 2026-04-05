@@ -140,7 +140,7 @@ body {
 .vt-stage-mockup-soft-gray::before {
   background:
     linear-gradient(180deg, rgba(242, 242, 244, 0.2) 0%, rgba(210, 211, 215, 0.28) 100%),
-    url("/mockups/soft-gray-minimal.png");
+    url("/mockups/soft-gray-minimal-4k.jpg");
   background-size: cover;
   background-position: center;
 }
@@ -148,7 +148,7 @@ body {
 .vt-stage-mockup-brick-wall::before {
   background:
     linear-gradient(180deg, rgba(26, 14, 8, 0.2) 0%, rgba(10, 6, 4, 0.3) 100%),
-    url("/mockups/brick-wall-closeup.png");
+    url("/mockups/brick-wall-closeup-4k.jpg");
   background-size: cover;
   background-position: center;
 }
@@ -156,7 +156,7 @@ body {
 .vt-stage-mockup-graphic-split::before {
   background:
     linear-gradient(180deg, rgba(236, 229, 205, 0.15) 0%, rgba(8, 58, 84, 0.15) 100%),
-    url("/mockups/graphic-split.jpg");
+    url("/mockups/graphic-split-4k.jpg");
   background-size: cover;
   background-position: center;
 }

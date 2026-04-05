@@ -253,7 +253,7 @@ const Customizer = () => {
         }
 
         try {
-          const cleaned = await removeDarkBackgroundFromImage(currentValue);
+          const cleaned = await removeDarkBackgroundFromImage(currentValue, 58, 34);
           if (active && cleaned) {
             state[stateKey] = cleaned;
           }
@@ -391,7 +391,7 @@ const Customizer = () => {
     }
 
     try {
-      return await removeDarkBackgroundFromImage(processed);
+      return await removeDarkBackgroundFromImage(processed, 58, 34);
     } catch (error) {
       return processed;
     }
@@ -988,8 +988,8 @@ const Customizer = () => {
                   const currentValue = snap[stateKey];
                   if (!currentValue) return;
 
-                  try {
-                    const cleaned = await removeDarkBackgroundFromImage(currentValue);
+                    try {
+                    const cleaned = await removeDarkBackgroundFromImage(currentValue, 58, 34);
                     if (cleaned) {
                       state[stateKey] = cleaned;
                     }

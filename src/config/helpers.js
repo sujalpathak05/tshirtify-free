@@ -36,9 +36,9 @@ const downloadBlob = (blob, fileName) => {
 };
 
 const STAGE_IMAGE_PRESETS = {
-  "mockup-soft-gray": "/mockups/soft-gray-minimal.png",
-  "mockup-brick-wall": "/mockups/brick-wall-closeup.png",
-  "mockup-graphic-split": "/mockups/graphic-split.jpg",
+  "mockup-soft-gray": "/mockups/soft-gray-minimal-4k.jpg",
+  "mockup-brick-wall": "/mockups/brick-wall-closeup-4k.jpg",
+  "mockup-graphic-split": "/mockups/graphic-split-4k.jpg",
 };
 
 const stageImageCache = new Map();
@@ -411,8 +411,8 @@ export const upscaleImageTo4K = async (imageSrc, longestSide = 4096) => {
 
 export const removeDarkBackgroundFromImage = async (
   imageSrc,
-  threshold = 42,
-  feather = 24
+  threshold = 58,
+  feather = 34
 ) => {
   if (!imageSrc) {
     return imageSrc;
@@ -546,11 +546,26 @@ export const removeDarkBackgroundFromImage = async (
       continue;
     }
 
-    if (alpha < 180) {
-      const matteLift = Math.round(((180 - alpha) / 180) * 255 * 0.8);
+    const r = data[offset];
+    const g = data[offset + 1];
+    const b = data[offset + 2];
+    const maxChannel = Math.max(r, g, b);
+    const minChannel = Math.min(r, g, b);
+    const neutralSpread = maxChannel - minChannel;
+
+    if (alpha < 230) {
+      const matteLift = Math.round(((230 - alpha) / 230) * 255 * 0.95);
       data[offset] = Math.max(data[offset], matteLift);
       data[offset + 1] = Math.max(data[offset + 1], matteLift);
       data[offset + 2] = Math.max(data[offset + 2], matteLift);
+    }
+
+    // Fade neutral-dark edge halos so front design does not look black/opaque.
+    const darkLimit = threshold + 22;
+    if (neutralSpread <= 34 && maxChannel <= darkLimit) {
+      const fadeRatio = (darkLimit - maxChannel) / darkLimit;
+      const attenuation = Math.max(0.2, 1 - fadeRatio * 0.72);
+      data[offset + 3] = Math.round(data[offset + 3] * attenuation);
     }
   }
 

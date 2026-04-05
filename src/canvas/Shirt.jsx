@@ -52,7 +52,7 @@ const DECAL_SETTINGS = {
 
 const DECAL_MATERIAL_PROPS = {
   transparent: true,
-  alphaTest: 0.2,
+  alphaTest: 0.24,
   depthTest: true,
   depthWrite: false,
   polygonOffset: true,
