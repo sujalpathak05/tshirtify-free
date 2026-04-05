@@ -1,0 +1,499 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,300;0,600;0,800;1,700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Nunito Sans", sans-serif;
+  background: #111116;
+  color: #111827;
+}
+
+.vt-app {
+  @apply h-full w-full flex flex-col overflow-hidden;
+}
+
+.vt-topbar {
+  @apply h-[72px] bg-[#efeff2] flex items-center justify-center px-6 md:px-10 border-b border-white/70;
+}
+
+.vt-brand {
+  @apply flex items-center gap-3 min-w-[120px];
+}
+
+.vt-logo-text {
+  @apply flex flex-col items-center gap-2 text-center;
+}
+
+.vt-heading-gradient {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.vt-heading-subtext {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.vt-nav-links {
+  @apply hidden md:flex items-center gap-8 text-sm font-semibold text-slate-700;
+}
+
+.vt-nav-links button {
+  @apply transition-colors hover:text-indigo-600;
+}
+
+.vt-nav-actions {
+  @apply flex items-center gap-3;
+}
+
+.vt-nav-secondary {
+  @apply px-5 py-2 rounded-full bg-white/70 text-indigo-500 font-semibold text-sm;
+}
+
+.vt-nav-primary {
+  @apply px-6 py-2 rounded-full bg-indigo-600 text-white font-semibold text-sm;
+}
+
+.vt-stage-shell {
+  @apply relative flex-1 overflow-hidden;
+}
+
+.vt-stage-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.vt-stage-dark::before {
+  background:
+    radial-gradient(70% 100% at 0% 50%, rgba(89, 96, 120, 0.35) 0%, rgba(18, 19, 27, 0.25) 42%, rgba(8, 8, 12, 0.95) 100%),
+    linear-gradient(90deg, #2a2e3b 0%, #12131b 28%, #0b0b10 100%);
+}
+
+.vt-stage-midnight::before {
+  background:
+    radial-gradient(60% 80% at 10% 45%, rgba(63, 115, 255, 0.3) 0%, rgba(16, 22, 40, 0.25) 46%, rgba(7, 8, 15, 0.98) 100%),
+    linear-gradient(90deg, #1c2235 0%, #0f1320 40%, #090b13 100%);
+}
+
+.vt-stage-studio::before {
+  background:
+    radial-gradient(65% 90% at 8% 52%, rgba(120, 120, 120, 0.28) 0%, rgba(24, 24, 24, 0.18) 48%, rgba(10, 10, 10, 0.98) 100%),
+    linear-gradient(90deg, #303030 0%, #171717 36%, #090909 100%);
+}
+
+.vt-stage-sunset::before {
+  background:
+    radial-gradient(55% 85% at 12% 50%, rgba(255, 209, 102, 0.45) 0%, rgba(255, 110, 110, 0.22) 40%, rgba(43, 12, 55, 0.94) 100%),
+    linear-gradient(100deg, #ff8a5b 0%, #ff5f6d 32%, #7f53ac 72%, #1f1d2b 100%);
+}
+
+.vt-stage-aurora::before {
+  background:
+    radial-gradient(58% 88% at 10% 48%, rgba(64, 255, 197, 0.35) 0%, rgba(0, 136, 255, 0.2) 40%, rgba(7, 16, 36, 0.96) 100%),
+    linear-gradient(100deg, #42e695 0%, #3bb2b8 25%, #2b86c5 52%, #784ba0 100%);
+}
+
+.vt-stage-rainbow::before {
+  background:
+    radial-gradient(62% 90% at 8% 50%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.07) 36%, rgba(20, 20, 30, 0.95) 100%),
+    linear-gradient(
+      105deg,
+      #ff6b6b 0%,
+      #ff9f43 18%,
+      #feca57 35%,
+      #1dd1a1 52%,
+      #54a0ff 69%,
+      #5f27cd 86%,
+      #341f97 100%
+    );
+}
+
+.vt-stage-ocean::before {
+  background:
+    radial-gradient(62% 88% at 12% 50%, rgba(136, 223, 255, 0.35) 0%, rgba(70, 146, 255, 0.2) 38%, rgba(5, 19, 48, 0.96) 100%),
+    linear-gradient(100deg, #7fdbff 0%, #56ccf2 25%, #2f80ed 56%, #1b3b6f 100%);
+}
+
+.vt-stage-berry::before {
+  background:
+    radial-gradient(60% 85% at 8% 48%, rgba(255, 164, 212, 0.35) 0%, rgba(233, 30, 99, 0.22) 40%, rgba(32, 7, 32, 0.95) 100%),
+    linear-gradient(100deg, #ff9a9e 0%, #f06292 28%, #ba68c8 58%, #6a1b9a 100%);
+}
+
+.vt-stage-mockup-soft-gray::before {
+  background:
+    linear-gradient(180deg, rgba(242, 242, 244, 0.2) 0%, rgba(210, 211, 215, 0.28) 100%),
+    url("/mockups/soft-gray-minimal.png");
+  background-size: cover;
+  background-position: center;
+}
+
+.vt-stage-mockup-brick-wall::before {
+  background:
+    linear-gradient(180deg, rgba(26, 14, 8, 0.2) 0%, rgba(10, 6, 4, 0.3) 100%),
+    url("/mockups/brick-wall-closeup.png");
+  background-size: cover;
+  background-position: center;
+}
+
+.vt-stage-mockup-graphic-split::before {
+  background:
+    linear-gradient(180deg, rgba(236, 229, 205, 0.15) 0%, rgba(8, 58, 84, 0.15) 100%),
+    url("/mockups/graphic-split.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.stage-canvas {
+  @apply absolute inset-0 z-[1];
+}
+
+.vt-sidebar {
+  @apply absolute z-20 left-0 top-6 bottom-6 w-[240px] bg-[#e7e7eb] rounded-r-2xl shadow-[0_10px_30px_rgba(0,0,0,0.22)] p-3 flex flex-col gap-3 overflow-y-auto;
+}
+
+.vt-pill {
+  @apply w-full rounded-full px-4 py-3 text-sm font-bold flex items-center justify-between transition-all;
+}
+
+.vt-pill-dark {
+  @apply bg-[#111216] text-white;
+}
+
+.vt-pill-muted {
+  @apply bg-[#b8b9be] text-white;
+}
+
+.vt-pill-icon {
+  @apply text-xs opacity-80;
+}
+
+.vt-front-back-row {
+  @apply grid grid-cols-2 gap-2;
+}
+
+.vt-front-back-btn {
+  @apply px-2 py-2 rounded-xl bg-[#bebfc7] text-white text-xs font-bold;
+}
+
+.vt-front-back-active {
+  @apply bg-[#4f4fc7];
+}
+
+.vt-section {
+  @apply border-b border-[#d4d6de] pb-2;
+}
+
+.vt-section-trigger {
+  @apply w-full text-left flex items-center justify-between py-2 font-semibold text-[#3a3c48];
+  font-size: 1.1rem;
+}
+
+.vt-section-trigger > span:first-child {
+  font-size: 1.2rem;
+}
+
+.vt-section-meta {
+  @apply flex items-center gap-2 text-xs text-slate-500;
+}
+
+.vt-pro-badge {
+  @apply px-2 py-0.5 rounded-full bg-indigo-600 text-white text-[10px] font-bold;
+}
+
+.vt-section-content {
+  @apply pb-1;
+}
+
+.vt-color-grid {
+  @apply grid grid-cols-6 gap-2 mb-3;
+}
+
+.vt-color-swatch {
+  @apply h-8 rounded-lg border-2 border-transparent;
+}
+
+.vt-color-swatch-active {
+  @apply border-indigo-600;
+}
+
+.vt-color-input {
+  @apply w-full h-10 border-none bg-transparent;
+}
+
+.vt-chip-row {
+  @apply flex flex-wrap gap-2;
+}
+
+.vt-chip-grid .vt-chip {
+  @apply flex-1 min-w-[88px];
+}
+
+.vt-chip {
+  @apply px-3 py-2 rounded-xl bg-[#c2c3c9] text-white text-xs font-bold transition-all;
+}
+
+.vt-mockup-grid {
+  @apply grid grid-cols-3 gap-2;
+}
+
+.vt-mockup-card {
+  @apply p-1 rounded-xl border-2 border-transparent bg-[#c5c7ce] text-left transition-all;
+}
+
+.vt-mockup-card-active {
+  @apply border-indigo-600 bg-white;
+}
+
+.vt-mockup-thumb {
+  @apply w-full h-[62px] object-cover rounded-lg;
+}
+
+.vt-mockup-label {
+  @apply block mt-1 text-[10px] font-bold text-slate-700 text-center;
+}
+
+.vt-chip-active {
+  @apply bg-[#4f4fc7];
+}
+
+.vt-range-label {
+  @apply mt-3 text-xs text-slate-600 flex items-center justify-between font-semibold;
+}
+
+.vt-range {
+  @apply mt-1 w-full accent-indigo-600;
+}
+
+.vt-stop-motion-btn {
+  @apply mt-3 w-full rounded-xl bg-[#1e1f25] text-white font-bold text-xs py-2.5;
+}
+
+.vt-advanced-wrap {
+  @apply mt-1 p-3 rounded-xl bg-[#dbdce2] border border-white/50 flex flex-col gap-3;
+}
+
+.vt-advanced-title {
+  @apply text-xs uppercase tracking-wide text-slate-500 font-extrabold;
+}
+
+.vt-advanced-actions {
+  @apply flex flex-col gap-2;
+}
+
+.vt-mini-btn {
+  @apply px-3 py-2 rounded-lg bg-[#bcbec6] text-white text-xs font-bold text-left transition-all hover:bg-[#a8aab5];
+}
+
+.vt-upload-studio {
+  @apply border border-white/60 rounded-lg p-2 bg-[#ececf0];
+}
+
+.vt-advanced-sliders {
+  @apply border border-white/60 rounded-lg bg-[#ececf0] p-2;
+}
+
+.vt-advanced-transform {
+  @apply border border-white/60 rounded-lg bg-[#ececf0] p-2;
+}
+
+.vt-nudge-grid {
+  @apply mt-2 grid grid-cols-2 gap-2;
+}
+
+.vt-export-stack {
+  @apply mt-auto pt-1 flex flex-col gap-2;
+}
+
+.vt-export-btn {
+  @apply w-full rounded-full px-4 py-3 bg-[#4f4fc7] text-white font-bold text-sm flex items-center justify-between;
+}
+
+.vt-export-options {
+  @apply grid grid-cols-3 gap-2;
+}
+
+.vt-fullscreen-btn {
+  @apply absolute z-20 right-4 top-6 w-9 h-9 rounded-lg bg-white/90 text-slate-900 text-lg font-bold;
+}
+
+.vt-model-hint {
+  @apply absolute z-20 right-4 bottom-4 px-3 py-1.5 rounded-full text-white text-xs font-semibold;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.vt-export-panel {
+  @apply absolute z-30 left-[252px] top-6 w-[300px] bg-[#ececef] rounded-3xl p-4 shadow-[0_16px_40px_rgba(0,0,0,0.3)] border border-white/70;
+}
+
+.vt-export-header {
+  @apply flex items-center justify-between pb-3 border-b border-[#d4d6de];
+}
+
+.vt-export-header h3 {
+  @apply text-base font-semibold text-[#1f2433];
+}
+
+.vt-export-header button {
+  @apply text-lg text-[#44485c] w-8 h-8 rounded-full hover:bg-[#d8d9e0];
+}
+
+.vt-export-group {
+  @apply py-3;
+}
+
+.vt-export-title {
+  @apply text-sm font-semibold text-[#2d3142] mb-3;
+}
+
+.vt-size-grid {
+  @apply grid grid-cols-2 gap-3;
+}
+
+.vt-size-btn {
+  @apply bg-[#b8b9be] text-white rounded-2xl p-3 text-sm font-bold flex flex-col items-center gap-2 border border-transparent;
+}
+
+.vt-size-btn-active {
+  @apply bg-[#75767f] border-white/70;
+}
+
+.vt-size-icon {
+  @apply block rounded-md border-2 border-white/80;
+}
+
+.vt-size-auto {
+  width: 44px;
+  height: 28px;
+}
+
+.vt-size-portrait {
+  width: 28px;
+  height: 56px;
+}
+
+.vt-quality-row {
+  @apply flex items-center gap-3 mb-2 text-sm text-[#2f3343];
+}
+
+.vt-format-row {
+  @apply flex gap-2;
+}
+
+.vt-format-row .vt-chip {
+  @apply min-w-[86px] text-center;
+}
+
+.vt-toggle {
+  @apply w-11 h-7 rounded-full bg-[#c8c9ce] relative transition-all;
+}
+
+.vt-toggle::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 9999px;
+  background: #fff;
+  transition: transform 0.2s ease;
+}
+
+.vt-toggle-on {
+  @apply bg-[#4f4fc7];
+}
+
+.vt-toggle-on::after {
+  transform: translateX(16px);
+}
+
+.vt-export-actions {
+  @apply pt-2 flex flex-col gap-2;
+}
+
+.vt-export-option-btn {
+  @apply w-full rounded-full px-4 py-3 text-left font-bold text-sm flex items-center justify-between;
+}
+
+.vt-export-image {
+  @apply bg-[#9b9ca4] text-white;
+}
+
+.vt-export-video,
+.vt-export-model {
+  @apply bg-[#1c1d23] text-white;
+}
+
+.filepicker-wrapper {
+  @apply w-full flex flex-col gap-3;
+}
+
+.filepicker-container {
+  @apply w-full glassmorphism p-3 min-h-[250px] flex flex-col rounded-md;
+}
+
+.cropper-panel {
+  @apply glassmorphism p-3 w-full rounded-md;
+}
+
+.cropper-area {
+  @apply relative w-full h-[180px] rounded-md overflow-hidden bg-white/30;
+}
+
+.cropper-controls {
+  @apply mt-3;
+}
+
+.filepicker-label {
+  @apply border border-gray-300 py-1.5 px-2 rounded-md shadow-sm text-xs text-gray-700 focus:outline-none cursor-pointer w-fit;
+}
+
+.glassmorphism {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 2px 30px 0 rgba(31, 38, 135, 0.08);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+}
+
+input[type="file"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 960px) {
+  .vt-topbar {
+    @apply px-4;
+  }
+
+  .vt-nav-actions {
+    @apply hidden;
+  }
+
+  .vt-sidebar {
+    @apply w-[230px] top-3 bottom-3;
+  }
+
+  .vt-export-panel {
+    @apply left-[236px] top-3 w-[280px];
+  }
+}
