@@ -52,7 +52,7 @@ const DECAL_SETTINGS = {
 
 const DECAL_MATERIAL_PROPS = {
   transparent: true,
-  alphaTest: 0.24,
+  alphaTest: 0.18,
   depthTest: true,
   depthWrite: false,
   polygonOffset: true,
@@ -130,10 +130,10 @@ const Shirt = () => {
         texture.anisotropy = 16;
         texture.wrapS = THREE.ClampToEdgeWrapping;
         texture.wrapT = THREE.ClampToEdgeWrapping;
-        texture.minFilter = THREE.LinearFilter;
+        texture.minFilter = THREE.LinearMipmapLinearFilter;
         texture.magFilter = THREE.LinearFilter;
-        texture.generateMipmaps = false;
-        texture.premultiplyAlpha = true;
+        texture.generateMipmaps = true;
+        texture.premultiplyAlpha = false;
         texture.needsUpdate = true;
       }
     );

@@ -411,8 +411,8 @@ export const upscaleImageTo4K = async (imageSrc, longestSide = 4096) => {
 
 export const removeDarkBackgroundFromImage = async (
   imageSrc,
-  threshold = 58,
-  feather = 34
+  threshold = 44,
+  feather = 26
 ) => {
   if (!imageSrc) {
     return imageSrc;
@@ -440,6 +440,14 @@ export const removeDarkBackgroundFromImage = async (
   const imageData = context.getImageData(0, 0, width, height);
   const { data } = imageData;
   const size = width * height;
+  let hasTransparency = false;
+  for (let offset = 3; offset < data.length; offset += 4) {
+    if (data[offset] < 250) {
+      hasTransparency = true;
+      break;
+    }
+  }
+
   const visited = new Uint8Array(size);
   const queue = new Int32Array(size);
   let queueStart = 0;
@@ -474,62 +482,66 @@ export const removeDarkBackgroundFromImage = async (
     queueEnd += 1;
   };
 
-  for (let x = 0; x < width; x += 1) {
-    enqueue(x, 0);
-    enqueue(x, height - 1);
-  }
-
-  for (let y = 1; y < height - 1; y += 1) {
-    enqueue(0, y);
-    enqueue(width - 1, y);
-  }
-
-  while (queueStart < queueEnd) {
-    const index = queue[queueStart];
-    queueStart += 1;
-
-    const offset = index * 4;
-    data[offset] = 255;
-    data[offset + 1] = 255;
-    data[offset + 2] = 255;
-    data[offset + 3] = 0;
-
-    const x = index % width;
-    const y = (index / width) | 0;
-
-    enqueue(x - 1, y);
-    enqueue(x + 1, y);
-    enqueue(x, y - 1);
-    enqueue(x, y + 1);
-  }
-
-  const edge = Math.max(1, feather);
-  for (let index = 0; index < size; index += 1) {
-    if (visited[index]) {
-      continue;
+  // Only remove dark background automatically for opaque images (typically JPG/WebP without alpha).
+  // Transparent PNG artwork is preserved to avoid tearing black outlines/details.
+  if (!hasTransparency) {
+    for (let x = 0; x < width; x += 1) {
+      enqueue(x, 0);
+      enqueue(x, height - 1);
     }
 
-    const offset = index * 4;
-    const alpha = data[offset + 3];
-    if (alpha < 8) {
-      continue;
+    for (let y = 1; y < height - 1; y += 1) {
+      enqueue(0, y);
+      enqueue(width - 1, y);
     }
 
-    const r = data[offset];
-    const g = data[offset + 1];
-    const b = data[offset + 2];
-    const maxChannel = Math.max(r, g, b);
+    while (queueStart < queueEnd) {
+      const index = queue[queueStart];
+      queueStart += 1;
 
-    if (maxChannel <= threshold + edge) {
-      const ratio = (maxChannel - threshold) / edge;
-      const safeRatio = Math.max(0, Math.min(1, ratio));
-      const nextAlpha = Math.round(alpha * safeRatio);
-      data[offset + 3] = nextAlpha;
+      const offset = index * 4;
+      data[offset] = 255;
+      data[offset + 1] = 255;
+      data[offset + 2] = 255;
+      data[offset + 3] = 0;
 
-      if (nextAlpha <= 64) {
-        data[offset] = Math.max(data[offset], 245);
-        data[offset + 1] = Math.max(data[offset + 1], 245);
-        data[offset + 2] = Math.max(data[offset + 2], 245);
+      const x = index % width;
+      const y = (index / width) | 0;
+
+      enqueue(x - 1, y);
+      enqueue(x + 1, y);
+      enqueue(x, y - 1);
+      enqueue(x, y + 1);
+    }
+
+    const edge = Math.max(1, feather);
+    for (let index = 0; index < size; index += 1) {
+      if (visited[index]) {
+        continue;
+      }
+
+      const offset = index * 4;
+      const alpha = data[offset + 3];
+      if (alpha < 8) {
+        continue;
+      }
+
+      const r = data[offset];
+      const g = data[offset + 1];
+      const b = data[offset + 2];
+      const maxChannel = Math.max(r, g, b);
+
+      if (maxChannel <= threshold + edge) {
+        const ratio = (maxChannel - threshold) / edge;
+        const safeRatio = Math.max(0, Math.min(1, ratio));
+        const nextAlpha = Math.round(alpha * safeRatio);
+        data[offset + 3] = nextAlpha;
+
+        if (nextAlpha <= 64) {
+          data[offset] = Math.max(data[offset], 245);
+          data[offset + 1] = Math.max(data[offset + 1], 245);
+          data[offset + 2] = Math.max(data[offset + 2], 245);
+        }
       }
     }
   }
@@ -553,8 +565,8 @@ export const removeDarkBackgroundFromImage = async (
     const minChannel = Math.min(r, g, b);
     const neutralSpread = maxChannel - minChannel;
 
-    if (alpha < 230) {
-      const matteLift = Math.round(((230 - alpha) / 230) * 255 * 0.95);
+    if (alpha < 132) {
+      const matteLift = Math.round(((132 - alpha) / 132) * 255 * 0.9);
       data[offset] = Math.max(data[offset], matteLift);
       data[offset + 1] = Math.max(data[offset + 1], matteLift);
       data[offset + 2] = Math.max(data[offset + 2], matteLift);
@@ -562,7 +574,7 @@ export const removeDarkBackgroundFromImage = async (
 
     // Fade neutral-dark edge halos so front design does not look black/opaque.
     const darkLimit = threshold + 22;
-    if (neutralSpread <= 34 && maxChannel <= darkLimit) {
+    if (alpha < 150 && neutralSpread <= 34 && maxChannel <= darkLimit) {
       const fadeRatio = (darkLimit - maxChannel) / darkLimit;
       const attenuation = Math.max(0.2, 1 - fadeRatio * 0.72);
       data[offset + 3] = Math.round(data[offset + 3] * attenuation);
